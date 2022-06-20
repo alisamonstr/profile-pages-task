@@ -88,21 +88,25 @@ export const EditUserForm = ({ user, loading }: EditUserFormProps) => {
             message: 'Phone number should be more than 5 numbers',
           },
         }}
+        error={errors.phone?.message}
       />
       <Input
         label="street"
         register={register}
         options={{ required: 'Street is required' }}
+        error={errors.street?.message}
       />
       <Input
         label="postalCode"
         register={register}
         options={{ required: 'Postal code is required' }}
+        error={errors.postalCode?.message}
       />
       <Input
         label="city"
         register={register}
         options={{ required: 'City is required' }}
+        error={errors.city?.message}
       />
       <StyledButton type="submit" disabled={loading === 'updating'}>
         Save Changes
