@@ -17,15 +17,15 @@ const initialState = {
 export const getAllUsers = createAsyncThunk<User[], void, { state: RootState }>(
   'users/fetchAll',
   async (_, { getState }) => {
-    const status = getState().users.loading
-    const users = getState().users.users
-    console.log(status)
-    // if (status !== 'pending') {
     const response = await fetchUsers()
     return response.json()
-    // }
-    return users
   },
+  {
+    condition: (userId, { getState, extra }) => {
+      const status = getState().users.loading
+      return status !== 'pending'
+    },
+  }
 )
 
 export const usersSlice = createSlice({
