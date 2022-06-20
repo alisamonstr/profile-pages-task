@@ -38,6 +38,7 @@ const Name = styled.div`
   font-size: 16px;
   font-weight: 600;
 `
+
 const InfoItem = styled.div`
   padding-right: 10px;
   padding-bottom: 5px;

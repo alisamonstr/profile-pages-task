@@ -1,24 +1,29 @@
+import Head from 'next/head'
 import { useRouter } from 'next/router'
-import { SubmitHandler, useForm } from 'react-hook-form'
+import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import styled from 'styled-components'
 
-import { Button } from '../../components/Button'
 import { Card } from '../../components/Card'
-import { Container } from '../../components/Container'
-import { Input } from '../../components/Input'
-import { usersSelector } from '../../selectors'
+import { EditUserForm } from '../../components/EditUserForm'
+import { HeaderLayout } from '../../components/HeaderLayout'
+import { useAppDispatch } from '../../hooks/redux-hooks'
+import { userSelector } from '../../selectors'
+import { getUserById } from '../../state/user-state'
 
-const StyledContainer = styled(Container)`
+const Content = styled.div`
   display: flex;
   justify-content: center;
+  flex-direction: column;
+  align-items: center;
 `
 const StyledCard = styled(Card)`
   width: 100%;
   max-width: 800px;
 `
-const StyledButton = styled(Button)`
-  margin: 10px 0;
+const Title = styled.div`
+  font-size: 24px;
+  padding: 20px 0;
 `
 
 export interface FormInputs {
@@ -31,31 +36,34 @@ export interface FormInputs {
 
 const User = () => {
   const router = useRouter()
+  const dispatch = useAppDispatch()
   const { id } = router.query
-  const { users } = useSelector(usersSelector)
-  const user = users?.find((u) => u.id === Number(id))
+  const { user, loading } = useSelector(userSelector)
 
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm<FormInputs>()
-  const onSubmit: SubmitHandler<FormInputs> = (data) => console.log(data)
+  useEffect(() => {
+    if (id) {
+      dispatch(getUserById(Number(id)))
+    }
+  }, [dispatch, id])
 
   return (
-    <StyledContainer>
-      <StyledCard>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <Input label="email" register={register} required />
-          <Input label="phone" register={register} required />
-          <Input label="street" register={register} required />
-          <Input label="postalCode" register={register} required />
-          <Input label="city" register={register} required />
-          <StyledButton type="submit"> Save Changes </StyledButton>
-        </form>
-      </StyledCard>
-    </StyledContainer>
+    <HeaderLayout>
+      <Head>
+        <title>Edit Profile</title>
+      </Head>
+      <Content>
+        <Title>Edit your profile</Title>
+        <StyledCard>
+          {(loading === 'loaded' || loading === 'updating') && (
+            <EditUserForm loading={loading} user={user} />
+          )}
+          {(loading === 'initial' || loading === 'pending') && (
+            <div>Loading...</div>
+          )}
+          {loading === 'rejected' && <div>Error</div>}
+        </StyledCard>
+      </Content>
+    </HeaderLayout>
   )
 }
 

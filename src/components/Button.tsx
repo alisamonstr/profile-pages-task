@@ -13,4 +13,9 @@ export const Button = styled.button`
   border-radius: 20px;
   border: 0;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  cursor: pointer;
+
+  &:disabled {
+    background-color: #a2e5bf;
+  }
 `
